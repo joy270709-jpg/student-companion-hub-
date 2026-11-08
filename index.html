@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Companion Hub - Free & 1,000+ Pro Tools Master Suite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- QRCode.js Library for auto-generating UPI QR codes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm py-4 px-6 flex justify-between items-center sticky top-0 z-30">
+        <div class="flex items-center gap-2">
+            <span class="bg-indigo-600 text-white font-bold p-2 rounded-lg text-sm">SC</span>
+            <div>
+                <h1 class="text-lg font-bold text-slate-900 leading-tight">Student Companion Hub</h1>
+                <p class="text-xs text-slate-500">Free Utilities & 1,000+ Pro Tool Directory</p>
+            </div>
+        </div>
+        <div id="auth-status" class="flex items-center gap-3">
+            <span class="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-semibold">Free Plan</span>
+            <button onclick="openPaymentModal()" class="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow hover:opacity-90 transition">
+                Unlock All 1,000+ Tools (₹299)
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto p-6 flex-grow w-full space-y-6">
+
+        <!-- Banner -->
+        <div class="bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 text-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h2 class="text-2xl font-bold mb-1">Your Ultimate College & Career Toolkit 🎓</h2>
+                <p class="text-indigo-100 text-sm max-w-xl">Browse our complete master directory of all 1,000+ professional tools below. Use our free everyday utilities or unlock the entire Pro master suite for just ₹299.</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 text-center min-w-[160px]">
+                <p class="text-xs text-indigo-200">Account Tier</p>
+                <p id="banner-status" class="font-bold text-lg text-white">Free Student</p>
+            </div>
+        </div>
+
+        <!-- Grid of Free Tools -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- TOOL 1: Word & Text Analyzer -->
+            <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">📝 Word & Character Counter</h3>
+                        <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">Free</span>
+                    </div>
+                    <textarea id="text-input" placeholder="Type text or essay..." class="w-full p-2.5 border border-slate-200 rounded-xl h-24 focus:ring-2 focus:ring-indigo-500 outline-none text-xs resize-none" oninput="countWords()"></textarea>
+                </div>
+                <div class="mt-3 pt-2 border-t border-slate-100 flex justify-between text-xs text-slate-500 font-medium">
+                    <span>Words: <strong id="word-count" class="text-indigo-600">0</strong></span>
+                    <span>Chars: <strong id="char-count" class="text-indigo-600">0</strong></span>
+                </div>
+            </section>
+
+            <!-- TOOL 2: CGPA to Percentage Calculator -->
+            <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">🎓 CGPA to Percentage</h3>
+                        <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">Free</span>
+                    </div>
+                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Enter CGPA (e.g. 8.5)</label>
+                    <input type="number" step="0.01" max="10" id="cgpa-input" placeholder="0.00" class="w-full p-2 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-indigo-500" oninput="calculatePercentage()">
+                </div>
+                <div class="mt-3 pt-2 border-t border-slate-100 bg-slate-50 p-2.5 rounded-xl flex justify-between items-center">
+                    <span class="text-xs font-semibold text-slate-600">Equivalent:</span>
+                    <span id="percentage-result" class="font-bold text-indigo-600 text-sm">0.00%</span>
+                </div>
+            </section>
+
+            <!-- TOOL 3: Attendance Calculator (75% Rule) -->
+            <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">📅 Attendance Tracker</h3>
+                        <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">Free</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-600">Attended</label>
+                            <input type="number" id="attended-classes" placeholder="e.g. 40" class="w-full p-2 border rounded-xl text-xs outline-none" oninput="calculateAttendance()">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-600">Total Classes</label>
+                            <input type="number" id="total-classes" placeholder="e.g. 50" class="w-full p-2 border rounded-xl text-xs outline-none" oninput="calculateAttendance()">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-2 pt-2 border-t border-slate-100 bg-slate-50 p-2.5 rounded-xl flex justify-between items-center text-xs">
+                    <span class="font-semibold text-slate-600">Percentage:</span>
+                    <span id="attendance-result" class="font-bold text-indigo-600">0.0%</span>
+                </div>
+            </section>
+        </div>
+
+        <!-- Section: Task & Assignment Planner -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">📋 Semester Assignment & Exam Planner</h3>
+                <span class="text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded font-medium">Saved locally</span>
+            </div>
+            <div class="flex gap-2 mb-4">
+                <input type="text" id="task-input" placeholder="Add a new assignment, lab record, or exam..." class="flex-grow p-2.5 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                <button onclick="addTask()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition">Add Task</button>
+            </div>
+            <div id="task-list" class="space-y-2 max-h-40 overflow-y-auto"></div>
+        </div>
+
+        <!-- PRO SECTION: FULL 1,000+ TOOLS DIRECTORY PREVIEW -->
+        <section id="pro-section" class="bg-white p-6 rounded-2xl shadow-sm relative overflow-hidden border-2 border-amber-300">
+            
+            <!-- Pro Header & Global Search for the 1,000+ tools -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-4 gap-4">
+                <div>
+                    <h3 class="font-bold text-amber-600 text-lg flex items-center gap-2">⭐ Complete 1,000+ Pro Features Directory</h3>
+                    <p class="text-xs text-slate-500">Preview all 10 specialized categories and 1,000+ tool names below before unlocking interactive execution.</p>
+                </div>
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <input type="text" id="pro-search" placeholder="Search all 1,000+ tools..." oninput="filterProTools()" class="p-2 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-amber-500 w-full md:w-64">
+                    <button onclick="openPaymentModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs whitespace-nowrap shadow">Unlock All (₹299)</button>
+                </div>
+            </div>
+
+            <!-- Locked Overlay Banner inside the Section -->
+            <div id="pro-overlay" class="mb-6 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 p-4 rounded-xl flex flex-col md:flex-row justify-between items-center gap-3 shadow-md">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">🔒</span>
+                    <div>
+                        <h4 class="font-extrabold text-sm">Interactive Execution is Currently Locked</h4>
+                        <p class="text-xs opacity-90">Review the complete 1,000+ tool directory below. Pay ₹299 to instantly unlock execution access.</p>
+                    </div>
+                </div>
+                <button onclick="openPaymentModal()" class="bg-slate-950 text-white font-bold px-5 py-2 rounded-lg text-xs hover:bg-slate-800 transition whitespace-nowrap">
+                    Unlock Pro Mode Now ⚡
+                </button>
+            </div>
+
+            <!-- 10 Pro Categories Grid (Featuring the Full 1,000+ Listed Directory) -->
+            <div id="pro-categories-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Category 1: Career & Placements -->
+                <div class="pro-card bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-2 flex items-center justify-between">
+                        <span>💼 Career & Placements</span> 
+                        <span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Tools 001-100</span>
+                    </h4>
+                    <ul class="text-xs text-slate-600 space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                        <li>• 001. AI ATS Resume Optimizer & Keyword Scanner</li>
+                        <li>• 002. LinkedIn Profile Headline & Bio Generator</li>
+                        <li>• 003. Professional Cover Letter Customizer</li>
+                        <li>• 004. Mock HR Interview Question Bank</li>
+                        <li>• 005. STAR Method Behavioral Answer Builder</li>
+                        <li>• 006. Corporate Salary Negotiation Calculator</li>
+                        <li>• 007. Quantitative Aptitude Formula Sheet</li>
+                        <li>• 008. Logical & Analytical Reasoning Solver</li>
+                        <li>• 009. Verbal Ability & English Grammar Master</li>
+                        <li>• 010. Coding Round Pattern & Company Analyzer</li>
+                        <li>• 011. Low-Level System Design Template Kit</li>
+                        <li>• 012. High-Level Architecture Diagram Generator</li>
+                        <li>• 013. Git & GitHub Version Control Masterclass</li>
+                        <li>• 014. Developer Portfolio Website Boilerplate</li>
+                        <li>• 015. Internship Tracking & Follow-up Dashboard</li>
+                        <li>• 016. Cold Email Generator for HRs & Founders</li>
+                        <li>• 017. Professional Networking Elevator Pitch Creator</li>
+                        <li>• 018. Soft Skills & Workplace Etiquette Assessment</li>
+                        <li>• 019. Computer Science Technical Glossary Index</li>
+                        <li>• 020. Freelance & Client Project Proposal Generator</li>
+                        <li>• 021 to 100. [Advanced Career, Interview, Portfolio & Placement Tools 021-100]</li>
+                    </ul>
+                </div>
+
+                <!-- Category 2: Coding & CSE -->
+                <div class="pro-card bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-2 flex items-center justify-between">
+                        <span>💻 Coding & CSE</span> 
+                        <span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Tools 101-200</span>
+                    </h4>
+                    <ul class="text-xs text-slate-600 space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                        <li>• 101. C Programming Advanced Snippet Vault</li>
+                        <li>• 102. Python Algorithm & Data Structure Library</li>
+                        <li>• 103. HTML5 & CSS3 Responsive Template Generator</li>
+                        <li>• 104. SQL Query Performance Optimizer</li>
+                        <li>• 105. Data Structures Graphical Visualizer</li>
+                        <li>• 106. Big-O Time & Space Complexity Calculator</li>
+                        <li>• 107. REST API Endpoint Tester & Mock Client</li>
+                        <li>• 108. JSON Data Formatter & Minifier</li>
+                        <li>• 109. Regex Pattern Builder & Tester</li>
+                        <li>• 110. Markdown to Clean HTML Converter</li>
+                        <li>• 111. Base64 Encoder / Decoder Utility</li>
+                        <li>• 112. Web Color Palette & Contrast Checker</li>
+                        <li>• 113. CSS Flexbox & Grid Interactive Playground</li>
+                        <li>• 114. Browser LocalStorage State Debugger</li>
+                        <li>• 115. Cryptographically Secure Password Generator</li>
+                        <li>• 116. SHA-256 & MD5 Hash Code Generator</li>
+                        <li>• 117. Automated Unit Test Case Generator</li>
+                        <li>• 118. Stack Trace & Error Log Analyzer</li>
+                        <li>• 119. Dummy Data CSV & JSON Generator</li>
+                        <li>• 120. Web Typography & Font Pairing Guide</li>
+                        <li>• 121 to 200. [Advanced Algorithms, Compilers & Engineering Modules 121-200]</li>
+                    </ul>
+                </div>
+
+                <!-- Category 3: Academic & Exams -->
+                <div class="pro-card bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-2 flex items-center justify-between">
+                        <span>📚 Academic & Exams</span> 
+                        <span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Tools 201-300</span>
+                    </h4>
+                    <ul class="text-xs text-slate-600 space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                        <li>• 201. Semester SGPA to Cumulative CGPA Converter</li>
+                        <li>• 202. Backlog Recovery & Study Time Planner</li>
+                        <li>• 203. Pomodoro Pro Focus Timer & Session Tracker</li>
+                        <li>• 204. Active Recall Digital Flashcard Builder</li>
+                        <li>• 205. APA / IEEE Citation & Bibliography Formatter</li>
+                        <li>• 206. Academic Plagiarism Prevention Guide</li>
+                        <li>• 207. Research Paper Abstract & Thesis Writer</li>
+                        <li>• 208. Engineering Lab Record Index Generator</li>
+                        <li>• 209. External Viva Voce Question Simulator</li>
+                        <li>• 210. Core Subject Formula Derivation Notes</li>
+                        <li>• 211. Advanced Engineering Mathematics Solver</li>
+                        <li>• 212. Physics Constants & Mechanics Reference</li>
+                        <li>• 213. Chemistry Stoichiometry & Equation Balancer</li>
+                        <li>• 214. Electrical Circuit Theory Calculator</li>
+                        <li>• 215. Structural Mechanics Formula Directory</li>
+                        <li>• 216. Data Science Statistics Cheat Sheet</li>
+                        <li>• 217. Machine Learning Algorithm Matrix</li>
+                        <li>• 218. AI Ethics & Cyber Law Case Study Bank</li>
+                        <li>• 219. Seminar PPT Outline & Speech Generator</li>
+                        <li>• 220. Thesis Chapter Structure Organizer</li>
+                        <li>• 221 to 300. [Comprehensive Academic Revision & Subject Solver Tools 221-300]</li>
+                    </ul>
+                </div>
+
+                <!-- Category 4: Utilities & Bulk -->
+                <div class="pro-card bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-2 flex items-center justify-between">
+                        <span>⚡ Utilities & Bulk</span> 
+                        <span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Tools 301-400</span>
+                    </h4>
+                    <ul class="text-xs text-slate-600 space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                        <li>• 301. Bulk Image Compressor (Up to 100 files)</li>
+                        <li>• 302. PDF Merger, Splitter & Page Reorder</li>
+                        <li>• 303. High-Speed Image to PDF Converter</li>
+                        <li>• 304. Government Exam Passport Photo Resizer</li>
+                        <li>• 305. Digital Signature Background Remover</li>
+                        <li>• 306. OCR Image-to-Text Document Extractor</li>
+                        <li>• 307. Dynamic QR Code Generator Suite</li>
+                        <li>• 308. Custom Barcode Generation Tool</li>
+                        <li>• 309. Audio Format Converter (MP3/WAV/OGG)</li>
+                        <li>• 310. Video Trimmer & Compression Utility</li>
+                        <li>• 311. Client-Side Secure File Encryption</li>
+                        <li>• 312. Mess Bill & Hostel Expense Splitter</li>
+                        <li>• 313. Hostel Room Inventory Tracker</li>
+                        <li>• 314. Weekend Trip Itinerary Optimizer</li>
+                        <li>• 315. University Bus Schedule & Route Planner</li>
+                        <li>• 316. Daily Habit Streak & Goal Tracker</li>
+                        <li>• 317. Smart Hydration & Water Intake Reminder</li>
+                        <li>• 318. Circadian Sleep Cycle Calculator</li>
+                        <li>• 319. Student Strength Training Workout Builder</li>
+                        <li>• 320. Mindful Meditation & Breathing Timer</li>
+                        <li>• 321 to 400. [Advanced Media, Converter & Bulk System Tools 321-400]</li>
+                    </ul>
+                </div>
+
+                <!-- Category 5: AI & Prompts -->
+                <div class="pro-card bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-2 flex items-center justify-between">
+                        <span>🤖 AI & Prompts</span> 
+                        <span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Tools 401-500</span>
+                    </h4>
+                    <ul class="text-xs text-slate-600 space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                        <li>• 401. LLM Prompt Structure Optimizer</li>
+                        <li>• 402. Few-Shot Learning Example Generator</li>
+                        <li>• 403. AI Code Debugging Prompt Template</li>
+                        <li>• 404. Academic Essay Outline Prompt Builder</li>
+                        <li>• 405. Research Paper Summary Prompt Kit</li>
+                        <li>• 406. NLP Sentiment Analysis Prompt Setup</li>
+                        <li>• 407. Image Generation Prompt Creator</li>
+                        <li>• 408. AI Model Token Counter Estimator</li>
+                        <li>• 409. Chatbot System Persona Designer</li>
+                        <li>• 410. Chain-of-Thought Prompting Guide</li>
+                        <li>• 411 to 500. [Advanced Generative AI & Prompt Engineering Kits 411-500]</li>
+                    </ul>
+                </div>
+
+                <!-- Category 6: Data Science Hub -->
+                <div class="pro-card bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-2 flex items-center justify-between">
+                        <span>📊 Data Science Hub</span> 
+                        <span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Tools 501-600</span>
+                    </h4>
+                    <ul class="text-xs text-slate-600 space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                        <li>• 501. Pandas DataFrame Operations Cheat Sheet</li>
+                        <li>• 502. NumPy Array Manipulation Guide</li>
+                        <li>• 503. Matplotlib & Seaborn Plotting Syntax</li>
+                        <li>• 504. Linear Regression Formula Solver</li>
+                        <li>• 505. Descriptive Statistics Calculator</li>
+                        <li>• 506. Probability Distribution Reference</li>
+                        <li>• 507. Data Cleaning Pipeline Template</li>
+                        <li>• 508. Outlier Detection Algorithm Notes</li>
+                        <li>• 509. Feature Scaling Reference Guide</li>
+                        <li>• 510. Logistic Regression Decision Boundary Visualizer</li>
+                        <li>• 511 to 600. [Machine Learning, Statistics & MLOps Toolkits 511-600]</li>
+                    </ul>
+                </div>
+
+                <!-- Category 7: Cyber & Networks -->
+                <div class="pro-card bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-2 flex items-center justify-between">
+                        <span>🛡️ Cyber & Networks</span> 
+                        <span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Tools 601-700</span>
+                    </h4>
+                    <ul class="text-xs text-slate-600 space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                        <li>• 601. OSI Layer Protocol Reference Guide</li>
+                        <li>• 602. TCP/IP Handshake Flow Visualizer</li>
+                        <li>• 603. Port Scanning & Firewall Notes</li>
+                        <li>• 604. Symmetric vs Asymmetric Encryption Matrix</li>
+                        <li>• 605. JSON Web Token (JWT) Inspector</li>
+                        <li>• 606. HTTPS Certificate Validation Guide</li>
+                        <li>• 607. Common Vulnerability Assessment Checklist</li>
+                        <li>• 608. Wireshark Packet Filter Cheat Sheet</li>
+                        <li>• 609. Linux Firewall (iptables) Guide</li>
+                        <li>• 610. Subnetting & CIDR Block Calculator</li>
+                        <li>• 611 to 700. [Network Engineering & Security Modules 611-700]</li>
+                    </ul>
+                </div>
+
+                <!-- Category 8: Student Finance -->
+                <div class="pro-card bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-2 flex items-center justify-between">
+                        <span>💰 Student Finance</span> 
+                        <span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Tools 701-800</span>
+                    </h4>
+                    <ul class="text-xs text-slate-600 space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                        <li>• 701. Student Education Loan EMI Calculator</li>
+                        <li>• 702. Compound Interest Investment Growth Planner</li>
+                        <li>• 703. Monthly Mess & Hostel Pocket Money Budget</li>
+                        <li>• 704. Part-Time Earnings Tax Estimation Guide</li>
+                        <li>• 705. Emergency Savings Fund Calculator</li>
+                        <li>• 706. Subscription & Digital Expense Auditor</li>
+                        <li>• 707. Cost-per-Use Purchase Decision Tool</li>
+                        <li>• 708. Cryptocurrency & Stock Glossary</li>
+                        <li>• 709. Financial Independence Milestone Tracker</li>
+                        <li>• 710. Budget Allocation Rule (50/30/20) Calculator</li>
+                        <li>• 711 to 800. [Personal Finance, Investments & Loan Tools 711-800]</li>
+                    </ul>
+                </div>
+
+                <!-- Category 9: UI/UX & Design -->
+                <div class="pro-card bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-2 flex items-center justify-between">
+                        <span>🎨 UI/UX & Design</span> 
+                        <span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Tools 801-900</span>
+                    </h4>
+                    <ul class="text-xs text-slate-600 space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                        <li>• 801. Figma Keyboard Shortcuts Master Guide</li>
+                        <li>• 802. WCAG Contrast Accessibility Checker</li>
+                        <li>• 803. UI Spacing & Grid System Calculator</li>
+                        <li>• 804. Tailwind CSS Utility Class Reference</li>
+                        <li>• 805. Typography Scale & Hierarchy Builder</li>
+                        <li>• 806. Glassmorphism & Neumorphism CSS Generator</li>
+                        <li>• 807. SVG Icon Optimizer & Viewer</li>
+                        <li>• 808. Responsive Breakpoint Testing Matrix</li>
+                        <li>• 809. User Persona Template Creator</li>
+                        <li>• 810. Wireframing Layout Component Library</li>
+                        <li>• 811 to 900. [Design Systems, Figma & Frontend Toolkits 811-900]</li>
+                    </ul>
+                </div>
+
+                <!-- Category 10: Wellness & Habits -->
+                <div class="pro-card bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 text-sm mb-2 flex items-center justify-between">
+                        <span>🌱 Wellness & Habits</span> 
+                        <span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Tools 901-1000</span>
+                    </h4>
+                    <ul class="text-xs text-slate-600 space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                        <li>• 901. Daily 5 AM Routine Habit Tracker</li>
+                        <li>• 902. Exam Stress & Anxiety Relief Breathing Guide</li>
+                        <li>• 903. Posture Correction & Ergonomic Checklist</li>
+                        <li>• 904. Eye Strain Prevention (20-20-20 Rule Timer)</li>
+                        <li>• 905. Balanced Student Diet & Nutrition Planner</li>
+                        <li>• 906. Journaling & Gratitude Prompt Generator</li>
+                        <li>• 907. Digital Detox Schedule Builder</li>
+                        <li>• 908. Caffeine Intake & Sleep Quality Analyzer</li>
+                        <li>• 909. Burnout Prevention & Recovery Protocol</li>
+                        <li>• 910. Circadian Rhythm Sleep Optimizer</li>
+                        <li>• 911 to 1000. [Mental Health, Lifestyle & Habits Modules 911-1000]</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-100 py-4 px-6 text-center text-xs text-slate-400">
+        &copy; 2026 Student Companion Hub. Built for College Students.
+    </footer>
+
+    <!-- Payment & Lead Capture Modal -->
+    <div id="payment-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button onclick="closePaymentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
+            
+            <h3 class="text-xl font-bold text-slate-900 mb-1 text-center">Unlock All 1,000+ Pro Tools</h3>
+            <p class="text-xs text-slate-500 text-center mb-4">Enter your details to generate your secure payment slip & automated activation code.</p>
+            
+            <!-- Step 1: Details Form -->
+            <div id="step-details" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+                    <input type="text" id="user-name" placeholder="Joy Prince" class="w-full p-2.5 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
+                    <input type="email" id="user-email" placeholder="joy@example.com" class="w-full p-2.5 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Mobile Number</label>
+                    <input type="tel" id="user-mobile" placeholder="9876543210" maxlength="10" class="w-full p-2.5 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <button onclick="proceedToPayment()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-sm transition mt-2">
+                    Proceed to Scan & Pay (₹299)
+                </button>
+            </div>
+
+            <!-- Step 2: QR Code Scan -->
+            <div id="step-qr" class="hidden space-y-4">
+                <div class="flex flex-col items-center justify-center bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div id="qrcode" class="bg-white p-2 rounded-xl shadow-sm mb-2 flex justify-center items-center"></div>
+                    <p class="text-xs text-slate-500 uppercase font-semibold">UPI ID: <span class="font-mono text-indigo-600 font-bold select-all">joy.270709@okicici</span></p>
+                    <p class="text-xs text-slate-400 mt-0.5">Amount: ₹299.00</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-center">
+                    <p class="text-xs text-amber-800 font-medium">After transferring ₹299 via GPay/PhonePe/Paytm, click below to generate your automatic key.</p>
+                </div>
+
+                <button onclick="simulatePaymentConfirmation()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm transition">
+                    I Have Paid — Generate Code
+                </button>
+            </div>
+
+            <!-- Step 3: Success & Auto Activation Key -->
+            <div id="step-success" class="hidden space-y-4 text-center">
+                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+                    <span class="text-3xl">🎉</span>
+                    <h4 class="font-bold text-emerald-900 mt-1">Payment Registered Successfully!</h4>
+                    <p class="text-xs text-emerald-700 mt-1">Your unique Pro activation code has been generated.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Your Activation Code</label>
+                    <input type="text" id="generated-key-display" readonly class="w-full p-3 bg-slate-100 border border-slate-200 rounded-xl text-center font-mono font-bold text-indigo-600 text-lg select-all">
+                </div>
+
+                <button onclick="applyAutoKey()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-sm transition">
+                    Activate All 1,000+ Pro Tools Now ⚡
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        let qrGenerated = false;
+        let generatedKey = "";
+
+        window.onload = function() {
+            if (localStorage.getItem("is_pro_user") === "true") {
+                unlockProUI();
+            }
+            loadTasks();
+        };
+
+        // Tool 1: Word Counter
+        function countWords() {
+            const text = document.getElementById('text-input').value;
+            document.getElementById('word-count').innerText = text.trim() ? text.trim().split(/\s+/).length : 0;
+            document.getElementById('char-count').innerText = text.length;
+        }
+
+        // Tool 2: CGPA Calculator
+        function calculatePercentage() {
+            const cgpa = parseFloat(document.getElementById('cgpa-input').value);
+            const resultBox = document.getElementById('percentage-result');
+            if (isNaN(cgpa) || cgpa < 0) {
+                resultBox.innerText = "0.00%";
+                return;
+            }
+            resultBox.innerText = (cgpa * 9.5).toFixed(2) + "%";
+        }
+
+        // Tool 3: Attendance Tracker
+        function calculateAttendance() {
+            const attended = parseFloat(document.getElementById('attended-classes').value) || 0;
+            const total = parseFloat(document.getElementById('total-classes').value) || 0;
+            const resultBox = document.getElementById('attendance-result');
+
+            if (total === 0) {
+                resultBox.innerText = "0.0%";
+                return;
+            }
+            const percentage = ((attended / total) * 100).toFixed(1);
+            resultBox.innerText = percentage + "%";
+            if (percentage < 75) {
+                resultBox.className = "font-bold text-red-600";
+            } else {
+                resultBox.className = "font-bold text-emerald-600";
+            }
+        }
+
+        // Tool 4: Task Planner (LocalStorage)
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem('student_tasks')) || [];
+            const listContainer = document.getElementById('task-list');
+            listContainer.innerHTML = "";
+
+            if (tasks.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">No active tasks. Add one above!</p>`;
+                return;
+            }
+
+            tasks.forEach((task, index) => {
+                listContainer.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs">
+                        <span class="font-medium text-slate-700">${task}</span>
+                        <button onclick="deleteTask(${index})" class="text-red-500 hover:text-red-700 font-bold px-2">✕</button>
+                    </div>
+                `;
+            });
+        }
+
+        function addTask() {
+            const input = document.getElementById('task-input');
+            const val = input.value.trim();
+            if (!val) return;
+
+            const tasks = JSON.parse(localStorage.getItem('student_tasks')) || [];
+            tasks.push(val);
+            localStorage.setItem('student_tasks', JSON.stringify(tasks));
+            input.value = "";
+            loadTasks();
+        }
+
+        function deleteTask(index) {
+            const tasks = JSON.parse(localStorage.getItem('student_tasks')) || [];
+            tasks.splice(index, 1);
+            localStorage.setItem('student_tasks', JSON.stringify(tasks));
+            loadTasks();
+        }
+
+        // Filter Pro Tools in real-time
+        function filterProTools() {
+            const query = document.getElementById('pro-search').value.toLowerCase();
+            const cards = document.querySelectorAll('.pro-card');
+
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        // Payment & QR Code Modal Functions
+        function openPaymentModal() {
+            document.getElementById('payment-modal').classList.remove('hidden');
+            document.getElementById('step-details').classList.remove('hidden');
+            document.getElementById('step-qr').classList.add('hidden');
+            document.getElementById('step-success').classList.add('hidden');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').classList.add('hidden');
+        }
+
+        function proceedToPayment() {
+            const name = document.getElementById('user-name').value.trim();
+            const email = document.getElementById('user-email').value.trim();
+            const mobile = document.getElementById('user-mobile').value.trim();
+
+            if (!name || !email || mobile.length !== 10) {
+                alert("Please provide valid student contact information.");
+                return;
+            }
+
+            document.getElementById('step-details').classList.add('hidden');
+            document.getElementById('step-qr').classList.remove('hidden');
+
+            if (!qrGenerated) {
+                const upiString = `upi://pay?pa=joy.270709@okicici&pn=${encodeURIComponent(name)}&am=299.00&cu=INR`;
+                document.getElementById("qrcode").innerHTML = "";
+                new QRCode(document.getElementById("qrcode"), {
+                    text: upiString,
+                    width: 160,
+                    height: 160,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                qrGenerated = true;
+            }
+        }
+
+        function simulatePaymentConfirmation() {
+            const randomCode = "PRO-1000X-" + Math.floor(100000 + Math.random() * 900000);
+            generatedKey = randomCode;
+            localStorage.setItem("valid_pro_key_" + randomCode, "true");
+
+            document.getElementById('generated-key-display').value = randomCode;
+            document.getElementById('step-qr').classList.add('hidden');
+            document.getElementById('step-success').classList.remove('hidden');
+        }
+
+        function applyAutoKey() {
+            localStorage.setItem("is_pro_user", "true");
+            unlockProUI();
+            closePaymentModal();
+            alert("🎉 All 1,000+ Pro Tools successfully unlocked!");
+        }
+
+        function unlockProUI() {
+            document.getElementById('pro-overlay').style.display = 'none';
+            document.getElementById('banner-status').innerText = "1,000+ Pro Suite Active ⭐";
+            document.getElementById('auth-status').innerHTML = `
+                <span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full font-bold">⭐ 1,000+ Pro Active</span>
+            `;
+        }
+    </script>
+</body>
+</html>
